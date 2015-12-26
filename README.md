@@ -27,4 +27,4 @@ For this course we tested two machine learning models against a dataset from the
 was conducted in Matlab and we produced a poster.
 
 Machine Learning Products:
-+ Matlab code and A1 poster
++ Matlab code and A1 poster presenting results and finidngs
