@@ -19,6 +19,7 @@ There are two analysis projects for this course.
 This is organised as follows:
 + Project 1: corresponds to DataScienceReport and report1_analysis.py
 + Project 2: corresponds to DataScience_Coursework2_report and f1 to f4 .py files
++ Jupyter Notebooks of some adhoc analysis such as clustering, network analysis and dimensionality reduction
 
 ####Machine Learning
 
