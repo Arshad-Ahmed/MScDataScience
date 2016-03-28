@@ -26,5 +26,25 @@ This is organised as follows:
 For this course we tested two machine learning models against a dataset from the UCI Machine Learning Repository. The analysis
 was conducted in Matlab and we produced a poster.
 
-Machine Learning Products:
+Machine Learning Projects:
 + Matlab code and A1 poster presenting results and finidngs
+
+####Neural Networks
+
+This is building on the introductory Machine Learning material and exploring Neural Networks in detail.
+
+Neural Network Projects:
++ Compare a Multi Layer Perceptron and SVM for classification and suggested a new approach to evaluation of such models
++ Python code and report
+
+####Software Agents
+
+Experimenting with deterministic and stochastic versions of the Q Learning algorithm with different parameterisations.
+
+Contains:
++ Deterministic Q learning notebook
++ Stochastic Q Learning notebook
++ Report analysing results and making some new contributions
+
+
+
