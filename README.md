@@ -61,7 +61,7 @@ Using the Processing language in Java mode in combination with the gicentreutils
 Contains:
 + Processing sketches
 + Design justification document
-+ Packaged sketch for Win64
+
 
 
 
