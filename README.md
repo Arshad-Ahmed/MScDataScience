@@ -46,5 +46,22 @@ Contains:
 + Stochastic Q Learning notebook
 + Report analysing results and making some new contributions
 
+###Visual Analytics
+
+Utilising an human in the loop appraoch to complementing computation with informative visualisation for the generation of insights from large and complex data.
+
+Contains:
++ Literature Review of the Epidemiological Applications of Visual Analytics
++ Visual Analytics approach to exploring Income Inequality data from the World Bank done using a combination of Python, Matlab and Tablaeu. 
+
+###Data Visualisation
+
+Using the Processing language in Java mode in combination with the gicentreutils library to create a basic sketch to explore Greenhouse Gas Emissions data for the UK from the period 1960 - 2012.
+
+Contains:
++ Processing sketches
++ Design justification document
++ Packaged sketch for Win64
+
 
 
