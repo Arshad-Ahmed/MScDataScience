@@ -62,7 +62,7 @@ Contains:
 + Processing sketches
 + Design justification document
 
-###MSc Thesis
+###MSc Thesis (in progress)
 
 For my thesis project I am investigating measures for the analysis of dynamic networks. More 
 specifically email networks. I am using the Enron email network data for this work.
@@ -70,4 +70,4 @@ specifically email networks. I am using the Enron email network data for this wo
 Contains:
 + Data
 + Code
-+ Report (in progress)
++ Report 
