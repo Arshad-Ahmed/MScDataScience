@@ -1,0 +1,12 @@
+Dynamic Network Analysis of Enron Email Data,
+,
+Test Number,Description
+00,First look at data and initial checks
+01,Break into networks but with cumulative yearly aggregation and look at centrality and other network statistics
+02,Break data into monthly and yearly aggregations without cumulative aggregation and choose benchmark measures. Derive Seismic attributes from Laplacian matrix to evaluate their plausibility
+03,Deriving Seismic attributes from 3 graph matrices
+04,Comparison of attributes from 3 graph matrices to benchmark measures
+05,Consolidate analysis and remove analysis that 
+06,Derivation of Music attributes as a proof of concept and consolidated analysis for report.
+06.1,Derivation of Seismic and Music attributes from 3 graph matrices
+06.2,Comparison of all attributes from the 3 graph matrices using SNR and Entropy
