@@ -1,0 +1,53 @@
+\chapter{Evaluation, Reflection and Conclusions}
+
+\section{Reflections}
+
+The aim of this study was to firstly conduct a systematic review on the topic of dynamic network analysis. More specifically the use of similarity measures to support such analysis. From the reading of the literature it is shown that a wide variety of approaches have been tried and proposed. These range from distance, feature and visualisation based analysis among others. The data used was the Enron Email network data split at the yearly and monthly level. At the planning stage the acquisition of suitable data was a concern as many versions of this data exist online with the preprocessing provenance unclear. But we used the John Hopkins version as this had time stamps that could be used to segment the data. \\
+
+This study used as a starting point traditional measures of network analysis such as centrality measures along with other network statistics such as density and clustering coefficient to derive a time series of features from the graph time series.These benchmark measures were then used to establish a signal for the network and network visualisations aided in developing the explanations. But the main interest was to see whether additional novel measures could be developed and applied to dynamic networks. As a result of this we were able to introduce and demonstrate the use of novel metrics from the fields of Seismic Data Analysis and Music Information Retrieval. \\
+
+The key challenge in figuring out how to implement the Seismic attributes were to establish which data representation to use. Since graphs can be represented by a variety of matrices such as Adjacency, Modularity, Laplacian and Incidence which would yield the most stable attributes was the first concern. The convenient part of this process was however that there exist good libraries for Python for the task of signal processing so the key methods required such as Hilbert and Fourier Transform were readily available. However, the more exotic methods such as Abel Transforms and Radon Transforms came from more specialised packages. But their general availability contributed greatly to the success of this work. \\
+
+The Hilbert Transform formed the basis of most of the Seismic attributes and some image processing libraries were used for their implementations of the Hessian Matrix Eigenvalues which was required for curvature calculations. \\
+
+For the Music attributes implementation was almost abandoned due to the not being able to source well documented code for the implementation of the Stockwell Transform which is a common transformation used in the digital music domain. However, it was realised that the Frequency content that we were trying to derive could be derived also by the Fourier Transform. This realisation allowed us to be able to develop the Music attributes and the waveform visualisations for the dynamic networks. \\
+
+From the start it was realised that this project would be a highly technical and that the success would depend on being agile. From the Agile methodology some key approaches that were followed in this work were:
+
+\begin{enumerate}
+    \item Active user involvement is key
+    \item Requirements evolve but the time scale is fixed
+    \item Focus on frequent delivery of results
+    \item Testing is integrated throughout the project life cycle - evaluate what works otherwise move on
+    \item Adopt a collaborative and cooperative approach between all stakeholders
+\end{enumerate}
+
+Taking this approach meant that we were able to circulate weekly reports of the results and have regular meetings around them to discuss the methods being applied. The key consideration was to always establish how these metrics would be useful in analysis and the best way to demonstrate it. This would require us to develop a story for the interpretation of these metrics so there is some intuition as what we could expect these metrics to capture. \\
+
+To this end the Seismic attributes were developed and evaluated first since there exists a large body of literature on their varied use in the hydrocarbon exploration. Metaphors are used to build intuition around the Seismic attributes based on their use in industry. \\
+
+The derivation of the music attributes were greatly simplified by using the Fourier Transform to derive the frequency components and then collapsing the frequency trace into a single channel by averaging. Although a large number of measures exist for Music Information Retrieval some of the measures such as Cepstral based attributes were not possible due to the short length of the monthly networks which would require a large number of padding for the Fourier window. Thus the resulting output would be difficult to interpret. So these are left for future exploration. \\
+
+Thus we are able to present a large body of metrics for the analysis of dynamic metrics derived from completely unrelated to the the field of network analysis. We show that they work well have strong interpretations and analytical potential. Integral Transforms were key to deriving these attributes. So there is a scope for future work to explore more exotic transforms such as the Mellin, Hankel transforms and their potential applications. \\
+
+As a result of adopting and implementing a solid project plan coupled with effective management the project could be delivered comfortably within the set timescale. In addition the original aims were exceeded because initially we set out to explore some alternative spaces such as Hilbert and Fourier spaces this was mainly with the aim of deriving potential seismic attributes. The fact that we could use the Fourier space to derive a suite of Music attributes and visualisations was an unexpected realisation but a highly interesting side effect. \\
+
+\section{Suggestions for Future Work}
+
+The key recommendation for future work would be to take the novel measures proposed in this work and apply them to data sets from different domains and validate their performance. Also we have shown that we can use some exotic integral transforms such as the Abel Transform to derive some very interesting attributes. The utility and effectiveness other integral transforms such as Mellin, Hankel and others could be investigated. Some music attributes such as those based on Cepstral methods were not explored in this study but we have shown that this can be done on networks thus other work could explore the application of Cepstral and Mel Frequency Cepstral techniques for the derivation of additional novel attributes. \\
+
+\section{Conclusions}
+
+In conclusion, it can be said that the original aims and objectives for this study have been met and exceeded. Not only have we shown that we can derive many exciting attributes from integral transforms from other fields of study but we have highlighted that more measures from these fields can be imported. \\
+
+These integral transforms are not only useful  for the derivation of attributes but they can be used to support visualisation techniques such as the Radon, FK and Waveform plots. \\
+
+With regards to the dataset we noticed in the raw data that there were some mislabelled data which we did not consider. This left us 5 years of data with 44 months. Utilising the yearly and monthly aggregations we illustrated our generalisable work flow for the systematic analysis of dynamic networks. \\
+
+This consisted of firstly separating the network into the required aggregation granularity without successive agglomeration of the time periods. We then derive an attribute volume which consists of a set of benchmark and additional measures. These measures include meta attributes which serve to provide snapshots of the network activity at each time step by collapsing the attribute volume through some function. We show that the RMS and NRMS aggregation schemes work very well in this context. \\
+
+From the network analysis it is clear that the bursts are noticed by traditional measures when the networks are sparse and change points between sparse and dense parts of the network are not very clear. The newer measures proposed some such as the Kernel PCA Ratio and Norm of the Abel Transform attribute highlight this well. The Abel Transform attribute in addition also captures the trend in the time series that the graph time series is sparse in the beginning, it gets dense and thins out when the scandal hits Enron. \\
+
+We build correlation matrices, networks as well as MDS and TSNE plots to explore the relationship between the large number of attributes. From these we discover that there is large amount of correlation among existing and new measures proposed. This is surprising because graph measures have been designed specifically with the topological characteristics in mind but these measures are completely reliant on integral transforms and their derivatives. this could suggest that these measures have analogues in other fields and could be calculated differently. There is also the possibility that this is a feature of this dataset and more verification on this aspect is required. \\
+
+The work flow and methods used are highlighted in the Appendix section in order to allow full reproduction of results. \\

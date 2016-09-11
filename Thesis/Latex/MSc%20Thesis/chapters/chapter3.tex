@@ -1,0 +1,533 @@
+\chapter{Methods}
+
+\section{Analytical Tools}
+
+The dataset chosen for use in this study is the Enron email data set. However this data has many different versions with multitude of pre-processing applied to it and the provenance of which is difficult to ascertain. Therefore, for this study I use the version of the data from John Hopkins \cite{Park2008}. The data set is in (time, from, to) tuple format. Here the time is encoded as seconds elapsed from 1 Jan 1970. The from and to fields are node numberings. These could be potentially mapped to employee id's but a viable data set to perform this particular operation had not been found so it was decided not to perform this operation but continue the analysis with the nude numbers. \\
+
+The analysis is performed entirely using open source tools namely the IPython using the following packages:
+
+\begin{enumerate}
+    \item NetworkX - for graph analysis\cite{hagberg-2008-exploring}
+    \item Numpy - for numerical computation \cite{numpy:/content/aip/journal/cise/13/2/10.1109/MCSE.2011.37}
+    \item Scipy - for statistical functions\cite{scipy}
+    \item Pandas -for data structures and data analysis \cite{mckinney-proc-scipy-2010}
+    \item Matplotlib - for plotting \cite{Hunter:2007}
+    \item Seaborn - for visualisation\cite{Waskom2012}
+    \item Scikit-learn - for matrix decompostion routines\cite{Pedregosa2011d}
+    \item Librosa - for audio analysis\cite{brian_mcfee_2015_32193}
+    \item PyAbel - for Abel Transforms \cite{daniel_d_hickstein_2016_47423}
+\end{enumerate}
+
+
+\section{Analysis Approach}
+
+Firstly, the network is decomposed into time steps at the year and monthly level. This was done by using the timestamps and converting them into dates. Once the dates had been derived the data was decomposed further into yearly time steps and the individual years were split further into monthly time steps. Not all months are available for all years so for the period considered the yearly data is for the years 1998-2002 and the monthly data starts from November 1998 to April 2002. This gives 5 yearly time steps and 48 monthly time steps. At each step of the analysis the yearly and monthly time steps a range of network measures are used to characterise the change over time. \\
+
+The first step is to conduct some exploratory analysis of the data. This is done through primarily checking that the data has been subset properly into the years and months and then by visualising the networks. The visualisation of the networks also confirmed that the networks at both the monthly and year level are not unnecessarily dense. This could result if there is some aggregation in the data for example the network for 1999 contained data for the 1998 and so on. Therefore as an additional check the network sizes are compared with and without aggregation. The networks sizes and visualisations resulting serve as an additional Quality Control (QC) measure to give us confidence in the remainder of this analysis. \\
+
+Once the networks at the different time steps had been created the exploratory analysis was conducted using the measures listed above. These measures serve as the benchmark measures for the graph time series. The reason being that these measures are widely used and understood. They serve to establish the potential ground truth in this dataset and the signal that they represent can be used to asses the new measures proposed in this study. \\
+
+The measures described in this section are then derived for both the monthly and yearly networks. All attributes are scaled to [-1,1] to enable comparison. Also this helps when I perform regression analysis for feature ranking. \\
+
+These derived attributes are compared to the benchmark measures and deviations noted as points of interest. The correlation among all these measures are explored. This leads to the derivation of a correlation network of all attributes and correlation matrix which is reordered with cluster indices from hierarchical clustering and only plotted for measures where the correlation is $> 0.7$. In addition I utilise Multi Dimensional Scaling of the final attribute volume to  visualise the closeness of attributes in addition to the Correlation Network.\\
+
+Also the issue of combining these various metrics into an overall global measure of network activity is explored. Here I use the Emergence and Persistence measures suggested by \citeauthor{Wei2015}\cite{Wei2015}. Also I propose a novel measure of aggregation based on the Normalised RMS or NRMS that is commonly used in 4D seismic analysis to compare two surveys at different time points a so called repeatability measure. The NRMS measure can be thought of as a normalised RMS difference between two traces. In this case the attributes are aggregated by RMS at each time step. \\
+
+Having aggregated all these measures into the Persistence and Emergence measure so assess the importance of these new attributes I performed regression analysis with a Gradient Boosting Regressor. This regression analysis is done in two stages. In the both cases I divide the data into 50/50 test /train set since the dataset is very sample and I want to prevent over fitting. In the first case I use all the measures and use it to predict the Emergence measure of a network and perform a feature ranking on that basis. The second stage consists of predicting the Average Degree of the network using all the attributes including the aggregate Emergence measure. After this step I again perform feature ranking. Most these feature rankings for these network attributes show that the proposed attributes feature prominently. Especially with regards to the prediction of the average degree which is a fundamental property I show that the mean squared error on prediction is very low on this data using these attributes and that the derived attributes are particularly important in this. \\
+
+In addition to all the above I isolate common nodes between the networks in the yearly data and then plot their benchmark measures. I find that there are 5 nodes common among the yearly data and that their profile mirrors the signal seen in the yearly data. Some nodes exhibit very strong change which suggests that a small number of nodes may be driving the change that we see in the graph time series. The rationale for this thinking is that since these nodes experience large fluctuations in their value and our analysis is based on taking the mean of measures. As the mean is not a robust estimator it is reasonable to expect that presence of such extreme values could skew the signal. But this not completely undesirable in this case because this helps us isolate the interesting periods in our time series and the nodes associated with them. \\
+
+Finally I look at node level dynamics to explain some of the changes in the network. This is done by identifying common nodes between the yearly time scales and plotting their centrality trends over years. 
+
+\subsection{Graph Matrices}
+
+The attributes are derived from the matrix of the graph structure. The graph structure can be represented by different types of matrices such as the adjacency matrix, the Laplacian matrix and the Modularity matrix among others. It is important to note that in this study whenever the Laplacian is referred to the Normalised Laplacian is being referred to for brevity. This is because as \citeauthor{Anderson1985}\cite{Anderson1985} note that the eigenvalues derived from the Normalised Laplacian relate well to other graph invariants for general graphs that is not the case with other matrices such as the adjacency matrix. Another advantage noted is that the definition is more consistent with the eigenvalues derived from spectral geometry. Spectral geometry is an extension of spectral graph theory which incorporates more of an geometric approach in deriving graph properties through methods such as random walks and mixing of Markov Chains among others.\\
+
+\citeauthor{Brouwer2012}\cite{Brouwer2012} describes the \textbf{Adjacency matrix} of a graph as a [0,1] matrix indexed by the vertex or node set of a graph $A_{xy} =1$ if there is an edge from node x to node y and 0 otherwise. In the case of Multigraphs or graphs with loops this 1 is replaced by the count of the edges between nodes x and y. \\
+
+The Normalised Laplacian or Laplacian in our case is defined by \citeauthor{Anderson1985} in the following manner. If we consider a matrix, L of a Graph where $d_v$ is the degree of node v and the matrix L is defined as follows:\cite{Anderson1985}
+
+\begin{equation}
+      \[
+    L= 
+\begin{cases}
+    \ d_{v},& \text{if } u =v\\
+    \ -1,& \text{if } u \text{ and } v \text{ are adjacent}\\
+    0,              & \text{otherwise}
+\end{cases}
+\]
+\end{equation}
+
+Then the Laplacian matrix of the Graph cna be defined as:
+
+\begin{equation}
+      \[
+    \Gamma= 
+\begin{cases}
+    \ 1,& \text{if } u =v \text{ and } d_v \neq 0\\
+    \ \frac{-1}{ \sqrt{d_u d_v}},& \text{if } u \text{ and } v \text{ are adjacent}\\
+    0,              & \text{otherwise}
+\end{cases}
+\]
+\end{equation}
+
+This can be written as:
+
+\begin{equation}
+      \Gamma =  T^{-1/2}LT^{-1/2}
+\end{equation}
+
+Here T is the diagonal matrix where containing the degree values, $d_v$.\\
+
+The Modularity Matrix and Modularity function were developed as a means of better identifying community structure in graphs while minimising the influence of random factors. The modularity function, Q is the number of edges that fall in a community minus the the expected number of edges in an equivalent network with edges placed at random. This value is high for well formed communities and low for poor communities. This is defined as :\cite{Wang2008}\\
+
+\begin{equation}
+      Q = \frac{1}{2m}Trace(X^TMX)
+\end{equation}
+\\
+Here $$\sum_v{k} = 2m$$ where v are the degrees of node k and X is the assignment matrix where $\textbf{X} = (x_{ih})$, $x_{ih} =1$ if node i belongs to community h and $x_{ih}=0$ otherwise. \textbf{M} is the modularity matrix defined as:
+
+\begin{equation}
+      \textbf{M} = A - \frac{kk^T}{2m}
+\end{equation}
+
+Here k is a vector of degree of nodes and A is the adjacency matrix.\\
+
+Before continuing with the analysis utilising these attributes it was necessary to select which matrix the attributes will be calculated from. As will be shown in the Results Chapter that the attributes from the Laplacian are found to be most suitable. This was determined by firstly calculating all the attributes from the 3 different matrices: Laplacian, Adjacency and Modularity. Then for all the measures from each matrix the Signal to Noise Ratio was calculated as:
+
+\begin{equation}
+      SNR = \frac{\mu}{\sigma}
+\end{equation}
+\\
+Where the $\mu$ and $\sigma$ represent the mean and standard deviation of each attribute from the respective matrices. From this plot it was noticed that the attributes from the Modularity Matrix had the highest SNR ratio meaning that the information content was greater than the background this is indicated by having a $SNR \geq 1$. From this plot the highest SNR ratio attributes were chosen and then these selected attributes were compared from the 3 different matrices to the benchmark metrics. This surprisingly showed that even though the Modularity Matrix gave attributes with high SNR that these attributes failed to model the trend the benchmark measures showed. The measures were far too constrained to capture the variability observed. Hence as an additional QC the Mean Absolute Deviation plots of the attributes from the 3 matrices were  checked and here it was observed that the attributes from the Laplacian were both numerically more stable and had sufficient variability to capture the trends observed in the data and highlight additional areas of potential interest. \\
+
+The next step after having picked a matrix for the derivation of the attributes were to calculate the averages of the attributes over time at the yearly and monthly scale. These were then compared against the benchmark measures. \\
+
+It should be noted that a lot of these attributes proposed here are very commonly used in seismic attribute analysis to help interpret seismic volumes and delineate hydrocarbon reservoirs from surrounding geology. This is the inspiration for the interpretation of these measures here. The hydrocarbon reservoir in this case can be thought of as interesting points in our time series while the surrounding geology can be thought of as the background trend. \\
+
+\section{Benchmark Measures}
+
+The suite of benchmark measures are discussed here. These measures serve as snapshot of the network at each time step hence we cna treat them as measures of similarity or dissimilarity of graphs within the graph time series. \\
+
+Centrality measures are inherently node level properties and they can be broadly characterised as follows: \cite{Borgatti2006, Borgatti2005}
+\\
+\begin{itemize}
+    \item Volume based measures – degree like centrality
+    \item Length based measures – closeness like centrality
+    \item Medial measures – betweenness like centrality 
+\end{itemize}
+
+Volume and length based measures are what are called radial measures because they analyse walks that emanate from or terminate with a given node. Medial measures on the other hand are based on position so how many times does one encounter a node while trying to reach other nodes in the network. 
+
+We have mentioned some of the most popular centrality measures but there are numerous other variations mentioned in the literature and are beyond the scope of this work the interested reader is referred to the following starter references.[14]–[17]
+
+\subsection{Degree Centrality}
+
+Degree Centrality is a special case of the k-path centrality that counts the all the paths of a length, k that originate from a given node. the k path centrality behaves like the degree centrality when k=1 . This is simply the count of the number of edges incident upon a given node which is equivalent to summing the rows of the adjacency matrix. This is the case in an undirected network while in directed network we have to take the difference between the number of nodes incident upon a node and the number of nodes emanating from a node to get a measure of degree. Since the network under consideration in this study is undirected we will restrict our discussion to undirected interpretations of our measures.  \cite{Borgatti2006}
+
+\begin{equation}
+    c_i^{Deg}= \sum_j a_{ij} 
+\end{equation}
+
+\subsection{Closeness Centrality}
+Closeness Centrality is the graph theoretic distance or the geodetic distance from a given to all the other nodes in a network. This essentially the marginals of a geodetic distance matrix. \cite{Borgatti2006, Borgatti2005}
+
+\begin{equation}
+    c_i^{Clo}= \sum_j d_{ij} 
+\end{equation}
+
+\subsection{Betweenness Centrality}
+Betweenness centrality counts the number of times that a certain node, x needs to pass another node, y to get to another node, z through 
+the shortest path between them. \cite{Borgatti2006, Borgatti2005}
+
+\begin{equation}
+    c_{i}^{bet} = \sum_x \sum_y \frac{g_{xky}}{g_{xy}}
+\end{equation}    
+
+Here $g_{xy}$ is the number of geodesic paths from nodes x to y and $g_{xky}$ is the number of these geodesic paths that pass through the node k. 
+
+\subsection{Eigenvector Centrality}
+The Eigenvector Centrality is defined as the principal eigenvector of the adjacency matrix of a network. It captures the intuition that nodes that have high eigenvector centrality scores are likely to be close to other nodes which themselves have high values for this measure. \cite{Borgatti2006, Borgatti2005}
+
+\subsection{Katz Centrality}
+
+\citeauthor{Katz1953}\cite{Katz1953} introduced this centrality measure which derives the centrality value of a node based on the centrality of its neighbours. This is a generalisation of the Eigenvector centrality measure. The Katz Centrality is defined as:
+
+\begin{equation}
+      c_i^{katz} = \alpha \sum{A_{ij}c_j} + \beta \\ \qquad &\text{ where;}\\
+      \qquad \alpha < \frac{1}{\lambda_{max}}
+\end{equation}
+\\
+Here \textbf{A} is the adjacency Matrix of the graph with eigenvalues $\lambda$ and $\beta$ controls the initial centrality.\\
+
+Katz Centrality measures is also a measure of relative influence of a node within the network because it takes into account the number of immediate neighbours and also all the other nodes that connect to the node through these neighbours. When the $\beta$ parameter is set to 0 the Katz centrality is identical to the Eigenvector Centrality. In this study this value is set to 1.
+
+\subsection{Load Centrality}
+
+Load Centrality is described by \citeauthor{Goh2001,PhysRevE.64.016132}\cite{Goh2001,PhysRevE.64.016132}
+as fraction of all shortest paths that pass through that node.
+
+
+\subsection{Density}
+This is defined as the total number of edges divided by the total number of possible edges. \cite{Hanneman2005}
+
+\subsection{Diameter}
+The diameter of a network is the maximum geodesic distance between two nodes.\cite{Hanneman2005}
+
+\section{Complex Trace Attributes}
+
+The Complex trace attributes make use of the Hilbert Transform. So before we introduce the measure an introduction to the Hilbert Transform is presented here.
+
+\subsection{The Hilbert Transform}
+
+The Hilbert Transform is an integral transform that extends a normal and real valued function into the complex plane. This allows the derivation of two useful attributes the Instantaneous Amplitude or Energy Envelope and the Instantaneous Frequency. These fundamental complex trace attributes form the basis for the derivation of the other attributes as they are derivatives of these quantities. A Hilbert transform does not change the domain of the function so a time domain function remains a time domain function while a frequency domain functions remains in the frequency domain. In the time domain this translates to a $\frac{\lambda}{4}$ shift for all frequencies and a $-90^{\circ}$ phase shift for all spectral components in the frequency domain. \cite{Johansson1999}
+
+\subsection{The Complex Trace}
+
+As mentioned that these attributes are inspired by their use in seismic attribute analysis so the Complex Trace or Analytical Signal is introduced here here. Essentially it is the signal after the Hilbert Transform has been applied to it so that it has a Real and Imaginary component. Their use in seismic attribute analysis is discussed in detail by \citeauthor{Li2014,Subrahmanyam}\cite{Li2014,Subrahmanyam}. The descriptions included here are to build intuition around these attributes and to get a sense of what we can expect them to highlight. \\
+
+The complex trace is defined as 
+\begin{equation}
+    C(t) = S(t) + iH(t) \\
+\end{equation}
+
+Where:
+
+$C(t)$= Complex Trace
+
+$S(t)$= Real Data
+
+$H(t)$= Hilbert Transform of data \\
+
+Based on the above the Complex Trace Attributes introduced are shown.
+
+\begin{enumerate}
+    \item Instantaneous Amplitude, IA  
+    \item Power
+    \item Instantaneous Phase, IP   
+    \item Instantaneous Frequency, IF 
+    \item Derivative of Instantaneous Amplitude  , dIA
+    \item Second Derivative of IA  , d2IA
+    \item Instantaneous Acceleration, IAcc 
+    \item Amplitude Weighted Instantaneous Phase 
+    \item Amplitude Weighted Instantaneous Frequency 
+ \end{enumerate}
+    
+\subsection{Instantaneous Amplitude}
+
+Instantaneous Amplitude is widely used in traditional tectonic and stratigraphic interpretation. As one of the basic parameters of the amplitude attribute, it helps delineate the high- or low-amplitude anomaly (bright or dark spots). In this context this should highlight the bright and dark spots in the network when used as an attribute map and should show the highest and lowest points when used as a time series. As I show later this amplitude has a high correlation ( 0.7) with the traditional centrality measures so its behaviour is very similar to those. Therefore it is highly plausible that for this data it should suffice to look at this attribute instead of many different centrality measures. \\
+
+\begin{equation}
+    \sqrt{S(t)^2 + H(t)^2}
+\end{equation}
+
+\subsection{Power}
+The Power is calculated as the square value of the amplitude. In this case I use the Instantaneous Amplitude. This allows us to better understand the signal envelope as this attribute is smoother than the Amplitude. 
+
+\begin{equation}
+      IA^2
+\end{equation}
+
+
+\subsection{Derivative of Instantaneous Amplitude}
+
+The derivative of IA highlights the change in reflectivity and shows sharp interfaces and discontinuities. Effectively this should highlight the big changes in the IA and the smaller changes should make the attribute smooth. This is what we observe because the attribute highlights the peaks observed in the IA plot and the rest of the signal is fairly smooth for the time range. \\
+
+\begin{equation}
+    \frac{\mathrm d}{\mathrm d t} \big( IA \big)}
+\end{equation}
+
+\subsection{2nd Derivative of Instantaneous Amplitude}
+
+The second derivative of the IA highlights the interfaces very well - the places of change. This attribute is not too sensitive to the amplitude and can highlight even weak events.We see this to be the case where the first derivative highlights the individual peaks the second derivative smoothes the individual peaks and gives a smooth peak over the range of months where they occur and does a better job of highlighting the peaks towards the end of the timeseries than the first derivative.\\
+
+\begin{equation}
+    \frac{\mathrm d^2}{\mathrm d t^2} \big( IA \big)
+\end{equation}
+
+\subsection{Instantaneous Phase}
+
+Instantaneous Phase is expressed in degrees or radians at the selected sampling point. Instantaneous phase helps strengthen weak reflections in the inner parts of reservoirs and also strengthens the noise. Because the hydrocarbon accumulation often causes phase changes, this attribute can be used as a direct indication of hydrocarbons. The cosine of the instantaneous phase is derived from the instantaneous phase. It is commonly used to improve the variation display of the instantaneous phase because it has fixed boundary values (-1 to +1). In this context the change in the IP can be used as an indicator for the intervals which are the most interesting since they have a noticeable phase change. This is better illustrated by the cosine of IP especially the percentage change plot here we see the months with the greatest phase change really well and the peaks are well delineated in contrast to the just the IP plot. \\
+
+\begin{equation}
+    \arctan(\frac{H(t)}{S(t)})
+\end{equation}
+
+\subsection{Instantaneous Frequency}
+
+Instantaneous frequency is defined as the time derivative of the instantaneous phase and it is used for estimating seismic attenuation. Oil and gas reservoirs often cause the attenuation of high-frequency components, so this attribute is also conducive to measuring stratigraphic periodic intervals. In this context I expect this to show clearly the peaks of the signal. This is exactly what we see especially in the monthly trend where the two large peaks are clearly delineated with a some smaller peaks highlighted the attribute is smooth over the rest of the series. So it has the property of finding the most significant peaks in our data.\\
+
+\begin{equation}
+     \frac{\mathrm d}{\mathrm d t} \big( IP \big)
+\end{equation}
+
+\subsection{Instantaneous Acceleration}
+
+Instantaneous Acceleration is defined as the rate of change of the instantaneous frequency, which is often used to indicate the rate of attenuation and absorption. As gas (or oil, or water) can cause the attenuation of seismic waves, this attribute can represent a fluid interface in the high-resolution data. As a derivative attribute I expect it to highlight the peaks and troughs very effectively and be smooth in areas of less pronounced change. This is what is observed as the attribute highlights the two large peaks but with the opposite polarity of IF. 
+
+\begin{equation}
+      \frac{\mathrm d}{\mathrm d t} \big( IF \big)
+\end{equation}
+
+\subsection{Amplitude Weighted Instantaneous Frequency}
+
+Amplitude weighted Instantaneous Frequency provides a reliable smooth instantaneous frequency estimation in order to reduce the interference damage. I expcect this to better highlight frequency anomalies in the data and suppress insignificant anomalies. We see that the weighted IF is sharper in places where the IF is fairly smooth. This highlights the major peaks as well as minor anomalies not immediately obvious from the IF alone.\\
+
+\begin{equation}
+      IA . IF
+\end{equation}
+
+\subsection{Amplitude weighted Instantaneous Phase}
+
+The amplitude weighted IP should cause the phase to become sharper with the peaks and troughs more accentuated. This has the effect of magnifying the signal as well as the noise. However, in this case we see that the trend in IP weighted and regular IP plot are identical with the only difference being the magnitude of the peaks. \\
+
+\begin{equation}
+      IA . IP
+\end{equation}
+
+
+
+\section{Matrix and Matrix Decomposition Attributes}
+
+The novel matrix decomposition based metrics proposed in this study are:
+
+\begin{enumerate}
+    \item Norm of the Forward Abel Transform
+    \item Mean Gaussian Curvature
+    \item Kernel PCA 3 Component Ratio Change
+    \item Norm NMF Ratio Change
+    
+\end{enumerate}
+
+In addition some measures suggested in the literature are also implemented such as:
+
+\begin{enumerate}
+    \item Resistance Distance \cite{Klein1993}
+    \item Stationarity Ratio \cite{Perraudin2016}
+    \item Subgraph Stationarity \cite{Gupta}
+    \item Power Spectral Density \cite{Perraudin2016}
+\end{enumerate}
+
+\subsection{Norm of Forward Abel Transform}
+
+The Abel transform finds a slice of a cylindrically symmetric 3D object and provides a 2D projection of it. In essence it does a dimensionality reduction by finding a lower dimensional subspace for the higher dimensional projection. The Inverse Abel Transform recovers the original higher dimensional data space. In this attribute I use the Forward Abel Transform through direct numerical integration of the Abel equations. \\
+
+The Abel Transform attribute is calculated as follows:
+
+\begin{enumerate}
+  \item For the Normalised Graph Laplacian, $\Gamma$ take the Fourier Transform, $F(\Gamma)$.
+  \item Calculate the magnitude of the Fourier Transform of the Graph Laplacian $\sqrt{Freq_{real}^2 +Freq_{imag}^2}$
+  \item Take the Forward Abel transform of the magnitude of the Fourier Transform $A(F(\Gamma))$
+  \item Take the Norm of the resulting matrix at each time step
+\end{enumerate}
+
+This results in a lower dimensional representation of the Frequency content of the Laplacian Matrix. This is useful for highlighting change over time as this attribute and highlights when the underlying networks have expanded or contracted with regards to their activity.
+
+\subsection{Mean Gaussian Curvature}
+
+There are many ways to define curvature I use the Gaussian Curvature which is derived from the Hessian Matrix. A surface might be curved upward in places, curve downward in places, or even be flat in places. Also, at some given point, the surface may be curved upward in some directions and downward in others. The curvature measure helps us detect such change. Gaussian curvature can be positive, negative, or zero. A useful property of the curvature attribute is that it is independent of orientation of the surface. If we place vectors on this surface the would indicates where the curve bends i.e., the vectors are either diverging, converging, or parallel. This can correspond to the negative, positive or zero value of curvature.
+\\
+\begin{equation}
+      K = \frac{f_{xx}f_{yy}+f_{xy}f_{yx}}{(1+ f_x^2 + f_y^2)^2}
+\end{equation}
+
+The mean curvature is the trace of the eigenvalues of the Hessian Matrix 
+
+\begin{equation}
+      K_{mean} = trace(\lambda_{hessian}) 
+\end{equation}
+
+\subsection{Kernel PCA 3 Components Ratio}
+
+Here I calculate the Kernel PCA 3 Component ratio from the Normalised Graph Laplacian. This is the ratio of the main element difference between two networks. The reason a Kernel PCA is used is because of its ability to handle non-linearity through kernels. Here the RBF kernel is used to fit the Normalised Graph Laplacian and then the ratio is calculated as follows:\\
+
+Step 1: Fit and transform the Normalised Graph Laplacian keeping only the first 3 components: PC1, PC2 and PC3\\
+
+Step 2: Calculate the Kernel PCA Ratio
+\begin{equation}
+      KPCA_{r} = \frac{PC1-PC3}{PC1-PC2} \\
+\end{equation}
+
+
+Step 3: For all the networks calculate the change in the KPCA Ratio as:
+\begin{equation}
+      \Delta K_{r} =\frac{K_{rt0}}{K_{rt1}} 
+\end{equation}
+recursively to derive a rolling measure of the change in KLPCA Ratio over time.\\
+
+The KLPCA is one of the main element analysis methods in seismic attribute analysis where it is used to calculate the  correlation in a multitrace window. A small value represents a degree of intermittent or no correlation of geological phenomena. It is also used to detect discontinuities, such as faults and unconformities. Here the purpose is to locate big discontinuities in our networks over time. This represents a scalalble and easy way to locate the biggest changes even when we are dealing with a large number of dynamic networks. Most of the values encountered are relatively small. But from the monthly plot we see that there is a large discontinuity in June and July 1999 whose scale dominates the plot. Hence the log of this attribute is used and we see other smaller signals emerge as a result. 
+
+\subsection{Norm Non-Negative Matrix Factorisation Ratio}
+
+This is another metric derived from the Non-negative Matrix Factorisation of the graph matrix. The NMF involves finding two non-negative matrices (W, H) whose product approximates the non- negative matrix X. I take the Frobenius Norm of the NonNegative components derived from the data and calculate change in this ratio over time.\\
+
+I calculate the NMF Ratio change as:
+ \begin{equation}
+     NMF_r = \frac{|| WH_{t1} ||}{|| WH_{t0} ||}
+ \end{equation}
+ 
+ 
+\subsection{Resistance Distance}
+
+The resistance distance between vertices i and j of a graph G is defined as the effective resistance between the two vertices (as when a battery is attached across them) when each graph edge is replaced by a unit resistor. This resistance distance is a metric on graphs.
+
+I calculate the resistance distance as:\\
+
+M =Graph Matrix
+
+N = Length of M
+
+P = Moore-Penrose Pseudo Inverse of M
+
+D = The diagonal of P
+
+\begin{equation}
+      R_d = (D \otimes (N,1))^T + (D \otimes (N,1))^T - P - P^T 
+\end{equation}
+
+Here $\otimes$ denotes the Kronecker or outer product
+
+\subsection{Stationarity Ratio}
+
+The Stationarity Ratio is based on the SVD decomposition of the graph matrix and then calculated as a ratio of the norm of the diagonal elements to the norm of the  derived matrix. This is calculated as follows:\\
+
+ L = graph matrix 
+
+ U = eigenvalues of L
+
+ C = covariance of L
+\begin{equation}
+   \begin{align*}
+       CF = L (U^T C U)\\
+        S_r = \frac{\|diag(CF) \|}{\|CF \|} 
+   \end{align*}
+\end{equation}
+
+  
+\subsection{Subgraph Stationarity}
+
+This is computed from the adjacency matrix of graphs and is done in two steps. Essentially this is comparing the common subraphs between two networks and deriving a correlation score. This is done in two steps.
+
+Step 1: Calculate Correlation, Ct between the graphs at time, t and time, t+1.
+
+\begin{equation}
+    C(t) = \frac{A(t)\cap A(t+1}{A(t) \cup A(t+1)}
+\end{equation}
+
+
+Step 2: Calculate the Subgraph Stationarity, $\zeta$
+\begin{equation}
+    \zeta = \frac{\sum_{t=0}^{tmax-1} C(t,t+1)}{tmax-t0-1}
+\end{equation}
+
+From the Subgraph Stationariy $\zeta$ we can calculate the amount of members that change at each time step as:
+\begin{equation}
+    1- \zeta
+\end{equation}
+
+\subsection{Power Spectral Density}
+
+The Power Spectral Density (PSD) describes the distribution of power over frequency for a given time series or signal. The Power in this case can be thought of as not necessarily as physical power but as squared of the signal. This is similar to the Power attribute we introduced earlier but this allows us to understand its distribution. \cite{Miller2012}\\
+
+This is related to the auto correlation function and thus we can utilise this attribute like the amplitude to identify Amplitude or Power Anomalies. 
+
+\section{Music Attributes}
+
+\subsection{The Fourier Transform}
+I briefly describe the Fourier Transform as this is essential in derivation of the Music Attributes. The Fourier Transform is used here to extract the frequency components of the Normalised Graph Laplacian. Since for audio applications we need either a stereo or a mono channel we combine the frequency components into 1 audio channel by averaging across the rows of the frequency components. This results in a single audio channel which represents the underlying graph. From this it is possible to extract a number of Music Attributes such as the Zero Crossing Rate and Spectral Centroid. These two are chosen as they have intuitive interpretations which can be easily understood. Other attributes related to beats and tempo are more difficult to explain thus could be the subject of further work but not actively explored in this study. \\
+
+The Fourier Transform is discussed in detail by \citeauthor{Tao2012}\cite{Tao2012}. As with the Hilbert Transform the focus here is to build intuition and the reader is referred to materials cited for more thorough treatment of the subject. \\
+
+The Fourier Transform allows us to decompose functions in a systematic way into a superposition of symmetric functions such as trigonometric functions. These are related to physical concepts such as frequency and energy. The Fourier Transform is a reversible linear transform and is fundamental in the study of groups and is related to many linear algebra topics such as representing a vector as a linear combination of an orthonormal basis or as linear combinations of eigenvectors of a given vector. Changing the basis of the eigenvectors allows for the calculation of the Fourier Basis on Graph which will allow for more broader range of signal processing methods to be applied. \cite{Perraudin2016}
+
+\subsection{Zero Crossing Rate}
+
+The Zero Crossing Rate (ZCR) is perhaps one of the most widely used measure in the field of speech and audio analysis. This is simply the number of zero crossings or the number of time the signal crosses the zero line within a defined region or a window over the signal. \cite{Gouyon,TerrazasGonzalez2016}\\
+
+The ZCR measure can be evaluated over a fixed, moving or variable sized window. This measure estimates for the waveform complexity in the time domain. It is very useful in prividing a general trends with regards to the level of the overall frequency content. For this study we utilise this measure in the frequency domain this is also called the Spectral Zero Crossing Rate but the Zero Crossing Rate is used in the discussion because the underlying data is audio. The ZCR in the frequency domain provides information related to the transients location within a time window. Since the dataset is essentially a graph time series. The audio waveforms can also be thought of as a Audio Time Series. Hence we are essentially characterizing the whole audio signal at each time step by their average ZCR. This gives a measure of similarity for comparing the waveforms. The higher ZCR is indicative of greater change in the signal envelope. In this case since we are using the average of the ZCR we can interpret this as highlighting the fact the signal here is changing more rapidly compared to others which also leads to these regions having higher Power. This helps identify interesting time periods in the graph time series. \cite{TerrazasGonzalez2016}
+
+\subsection{Spectral Centroid}
+
+The Spectral Centroid is measure for the characterisation of spectra and is widely used in digital music to classify the brightness of a sound. It calculates the centre of mass of a signal using the weighted mean of the frequencies. The frequencies are derived via the Fourier Transform and the weights used are the magnitudes which are similar to the Amplitude. This could be thought of as being similar to the Amplitude weighted Frequency attribute introduced earlier. But instead of the Hilbert Transform the the audio signal derived from the Fourier Transform is used instead.  \cite{Grey1978}
+
+\section{Aggregation Schemes}
+
+\subsection{Persistence and Emergence}
+
+The Persistence measure used in this study utilised the time averaging of attributes. This can be stated as 
+
+\begin{equation}
+    P_{it} = Agg(m_1, ...,m_n)
+\end{equation}
+
+The aggregation measure here is averaging but could be any number of aggregation functions such as linear or exponential aggregations are also possible. This measure is essentially all the measures at a time step averaged into one value and then normalised by the length of the time series or $max(t)$. The Emergence measure is then just the normalised Persistence measure depending on whether the Persistence values are positive or negative. 
+
+\begin{equation}
+      \[
+    E_{i,t}= 
+\begin{cases}
+    \ 0,& \text{if } P_{i,t}=P_{i,t-1} \qquad\text{or } t=1\\\\
+    \ \frac{P_{i,t}-P_{i,t-1}}{N_{i,t}} & \text{ otherwise }
+\end{cases}
+\]
+\end{equation}
+
+\begin{equation}
+      \[
+    N_{i,t}= 
+\begin{cases}
+    \ max(P_{i,t},P_{i,t-1}) \text{ for non-negative Persistence} \\\\
+    \||P_{i,t}||+||P_{i,t-1}|| \text{ otherwise}
+\end{cases}
+\]
+\end{equation}
+
+This is comprehensive measure that allows all the above measures to be combined into a single measure for network characterisation. The Emergence measure is an indicator of network activity bursts can indicate periods of growth while troughs can indicate contraction. They help give an high level overview of the trend in the graph time series and captures network dynamics well when we use the attributes because they characterise the trends in the network the traditional measures do not highlight as well. 
+
+\subsection{NRMS of Network Attributes}
+
+The NRMS measure can be though of as a normalised RMS similarity measure in the sense that when two traces are similar the NRMS value will be close to 200 and when there is a great dissimilarity it will be less than 200. This constant helps to exaggerate the trends in the data while suppressing noise due to the use of the RMS operator. \\
+The NRMS measure is defined as follows:\cite{Kragh2002}
+
+\begin{align*}
+      NRMS = \sqrt{\frac{200 RMS(a-b)}{RMS(a) + RMS(b}} \qquad
+      RMS = \sqrt{ \frac{\sum{(x)^2}}{n}}
+\end{align*}
+
+\section{Visualisations}
+
+\subsection{F-K Plot}
+
+The F-K Plot is a visualisation technique used in seismic data analysis that isolates the signal in a central cone and separates the noise to enable easy filtering in the FK domain. The FK plot consists of the Frequency,f  and Wavenumber, k. The Frequency is derived by taking the Fourier Transform of the attribute volume. The wave number is then calculated as the reciprocal of the frequency. Plotting this also highlights that most of the signal is concentrated near the the central cone with k values around 0 and that the outliers have high/low values and are thus separated from the signal cone. These frequency indices from the F-K plot can be used to order the data and we can highlight which the months that standout on the F-K plot. \\
+
+In addition the Frequency, F and Wavenumber, k can be visualised individually as attribute maps with mappings to the months and attribute names. This allows for the identification of anomalies. 
+
+\subsection{Radon Plot}
+
+The Radon Transform is an integral transform that has various applications ranging from image processing, medical imaging, computer vision and seismic analysis. The transform can be defined as 
+
+\begin{equation}
+      R(p,\tau)[f(x,y)] = \cup(p, \tau)
+\end{equation}
+
+Here the p is the slope and $\tau$ is the intercept. In the image analysis context the Radon Transform computes projections along a axis. Since the Radon transform used here comes from an image analysis package this is the form utilised in this study. The plots of the projection of the Radon components are plotted. \\
+
+The Radon transform is used in seismic data analysis to seperate events based on their velocities. This is possible with the $\tau-p$ implementation of the Radon Transform. However, in image analysis the projection method is used. Since this particular implementation computes a sinogram consisting of projections of the input at different angles the analogy to velocity here is not possible. Typically the Radon plot is used where the p trace represents the iverse of velocity and the $\tau$ represents time at zero offset or intercept. But the transformed space is still very useful as a form of visualisation for the high dimensional attribute volume.  \\
+
+This plot helps easily visualise clusters in the data and is an additional visualisation tool that can also be used for outlier detection and filtering. The original data can also be reordered from the Radon Matrix in order to see which are the highest and lowest values in the context of the Radon plot. The resulting Radon Matrix can also be visualised as a Heatmap hence the trends observed in the Radon plot can be linked to the graph time series.
+
+\subsection{Log Panel}
+
+The Log Panel is a multi-attribute visualisation technique where the y-axis is the time series and the x-axis represents the range of the values. This helps to put multiple attributes side by side and enable the tracking of peaks of troughs in addition to being very conducive for multiple attribute interpretation. 
+\subsection{Audio Waveform Plot}
+
+The Audio Waveform Plot is a plot the amplitude envelope of a waveform. In our case the audio signal is one channel so we get a monophonic plot. The length indicates the length of the frequency trace which is a proxy for the length of the matrix. The frequency content is determined by the Laplacian Matrix which is a proxy for Degree. So high Degree correlates with high frequency which correlates to spikes in the waveform plot. This is a very compact representation of the graph matrix as we are able to gain both an overview of the characteristic of the network as well as a sense of the node level dynamics driving those changes. 
+
+\section{Manifold Dimensionality Reduction}
+
+\subsection{Multi Dimensional Scaling}
+Multi Dimensional Scaling is a visualisation technique that allows us to see the similarity of items in a dataset. These are a class of methods that work on a distance matrix derived from the original data. The MDS routine is an optimisation technique hence the solutions are non unique. This means that for the same data we can get a different representation each time the routine is run. But despite the layout variance the proximity of similar objects will be similar. Hence more similar objects will be closer while dissimilar objects will be farther. The MDS algorithm tries to position each item in a pre-defined N dimensional space while preserving inter object distances through some cost function. \cite{75a09d90318611daaa61000ea68e967b}\\
+
+\subsection{TSNE}
+
+TSNE is a non-linear dimensionality reduction technique where the probability distribution over pairs of high dimensional objects are created such that similar objects have a high probability of being picked and dissimilar objects have a low probability of being picked. This is achieved by defining a low dimensional map over the points and then minimizing the Kullback-Leibler divergence between the two distributions according to the locations on the lower dimensional map. This results in a lower dimensional mapping which shows the similarities present in the high dimensional dataset.\cite{VanDerMaaten2008}\\

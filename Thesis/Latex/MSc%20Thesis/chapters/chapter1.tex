@@ -1,0 +1,129 @@
+\chapter{Introduction}
+
+\section{Background}
+Networks arise in many modern day applications such as email, social, transport and telecommunication applications. These networks represent convenient structures to analyse phenomenon that would be very difficult to analyse otherwise. However, with most modern networks a key feature is that these networks evolve over time. These dynamic networks require analytical methods that would allow easy comparison between them at the different time steps. Thus similarity measures that allow us to assess and track change over time in such networks are instrumental for us to be able to study such networks. Therefore similarity analysis on dynamic networks is of critical importance if we are to be able to understand this evolution over time. This study is motivated by the need to explore the effectiveness of traditional Network Analysis metrics such as centrality analysis in the context of dynamic networks in addition to exploring novel measures. \\
+
+The traditional metrics were developed mainly for the analysis of static graphs thus for modern applications their suitability needs to be assessed and their shortcomings determined. In this study we find that although these measures can be utilised in a dynamic network context they are useful for benchmarking of other new measures.
+The field of Dynamic Network Analysis spawned with the explicit aim of expanding our toolkit to handle such complex evolving networks.  \\
+
+In this study we propose novel measures of similarity which are motivated by the fields of Seismic Data Analysis and Music information Retrieval. These novel measures proposed here are calculated from the Normalised Graph Laplacian. Some of these new attributes behave very similarly to traditional centrality measures while being sensitive to smaller changes in the network that traditional measures do not pick up on as well. \\
+
+In addition to capturing network dynamics we show that by utilising such attributes some aggregated network measures such as Average Degree could be predicted with a good level of accuracy using a Gradient Boosting Regression Technique. This is useful because having metrics that allow us to potentially model the change of the network under consideration can help us understand the key drivers even better. For example this method enables feature ranking of attributes in this data the attribute derived from the Abel Transform is found to be particularly useful. This is interesting because this attribute appears to capture hidden dynamics which become apparent through mapping to these alternative spaces but the traditional metrics do not feature highly on this list. So there is a case for these attributes to be used in a predictive context. \\
+
+This study also introduces a number of visualisation techniques to support the joint analysis of these attributes. These are namely the Radon, Frequency-Wavenumber (FK), Log Panel and Audio Waveform Plot. The Radon and FK  plot serve as a form of dimensionality reduction and allow us to visualise the whole derived attribute volume in these alternative spaces in 2 dimensions. The Log Panel allows the analysis of multiple attributes by placing them along panels side by side. These can be arranged in a number of ways such as the attributes can be grouped by type such as Centrality measures, Seismic and Music attributes or they can be sorted by cluster indices from a hierarchical clustering procedure. This name is inspired by Well Log Panels which are used in hydrocarbon exploration to help map lithologies using a variety of logs captured while drilling.
+
+\section{Paradigms of Network Analysis}
+
+The literature suggests 3 main paradigms of network analysis these inform the framing of research questions and investigative approach. These can be broadly described as: \cite{Chapanond2005}
+
+\begin{itemize}
+    \item Social Network Analysis (SNA)
+    \item Dynamic Network Analysis (DNA
+    \item Supernetwork Analysis (SuNA)
+\end{itemize}
+
+\subsection{Social Network Analysis (SNA)}
+
+SNA is concerned with the study of relationships between entities and its focus of research is of two types: whole network analysis and self-centred network analysis. Whole network analysis is concerned with understanding the structure of relationships between different roles in a group and is used to investigate network structure changes with the time and the contact pattern of network entities. Self-cantered network analysis is concerned with how the individual behaviour of network entities are influenced by the membership of the network. \cite{Chapanond2005}
+
+\subsection{Dynamic Network Analysis (DNA)}
+
+DNA was proposed as an extension to the SNA. The strength of DNA is that it is able to handle large scale dynamic, multi-modal, multi-lateral network with various levels of uncertainty. The edges are probabilistic and the nodes behave like agents in a multi agent environment so this enables perturbations or changes in the network to propagate through the network and result in some global reconfiguration. The evolution of a network in The application of machine learning and multi agent modelling in the same environment is enabled by DNA’s use of the meta matrix.\cite{Chapanond2005} 
+
+\subsection{Super Networks Analysis (SuNA)}
+
+Super networks can be thought of as networks of networks that exist above and beyond existing networks. These have the characteristic of being multi-layered, multi-dimensional, multi-attributed and multi-levelled with additional features such as congestion and coordination. These have been applied predominantly in supply chain management, finance, traffic and ecology among others. These networks are analysed using either variational inequality and/or hyper graph theory. \cite{Chapanond2005}
+
+\section{Recent Work}
+
+\citeauthor{Li2016}\cite{Li2016} notes the complexity and difficulty of Dynamic Network Analysis as a field of study. They note that modern applications such as the Internet of Things and mobile social networks we are faced with networks that are not only large but having complex dynamics associated with them. This is driven by the fact that node numbers and connections grow exponentially with connections constantly being added and broken. The properties of these networks evolve with time. This is the defining feature of a Dynamic Network. They are characterised by their time dependent topology due to fluctuations in the underlying network activity. As traditional data mining techniques are deemed to computationally expensive or insufficient when faced with such complex networks they suggest a visualisation based method in which the links in the dynamic graph are broken down by the time dimension. Each segment as a result represents a time step of the evolution of some property of the dynamic network. The key contribution is that their approach is a static view based approach which does not require the end user to have a mental map of the previous steps to enable analysis as in animation based methods. As a result it is easier for the end user to detect patterns and identify potential anomalies.\\
+
+\citeauthor{Pereira2016}\cite{Pereira2016} introduce the notion of evolving centralities in temporal networks in the context of social networks. They analyse data from Twitter but in order to understand the reaction of the structural position of the user with the underlying network evolution they utilise follower/followee networks are analyse the centrality evolution over time. Their approach is different in the sense that their approach is based on temporal graph theory. This enables more sophisticated analysis as the shortest path can be interpreted as a function of time and therefore they are able to recalculate the closeness and betweenness centrality using these fastest paths. This leads to their insight that Twitter users are dynamic and can assume or leave central positions in a network. \\
+
+\citeauthor{Wu2015}\cite{Wu2015} propose a graph based decay function to update the frequency of user interactions in a social network and then use a community detection algorithm to detect communities at each time step. They find that most studies ignore the temporal information in the study of community structure in networks and show that by incorporating such information is very helpful in the analysis of community evolution analysis in social networks.\\
+
+\citeauthor{Hu2015}\cite{Hu2015} use probabilistic graphic models to detect time-evolving influence among objects from dynamic heterogeneous graphs. They note that the dynamic nature of such heterogeneous graphs where nodes and edges are added or removed dynamically are not sufficiently addressed by current studies. Therefore to handle the dynamics of the network and to learn the time evolving influence structure they propose to use probabilistic graphic models using the graphs at discrete time stamps. \\
+
+\citeauthor{Mahyari2015}\cite{Mahyari2015} discuss signal processing on graphs and introduce the Fourier Transform for dynamic networks. They do this by finding a common subspace across a modified common Laplacian matrix for the dynamic networks. The eigenvectors of this Laplacian form the Fourier basis for the networks. From this common subspace the eigenvalues correspond to frequency components. Therefore high eigenvalues correspond to high frequency and vice versa. The Fourier transform is used extensively in this study for the derivation of the multiple attributes and supports many visualisation techniques as will be discussed in Chapter 3.  The key difference between this study and our work is that they first find a subspace and then find the Fourier Transform of it and we apply the integral transform directly to the matrix and derive attributes from Fourier space.\\
+
+\citeauthor{Lansing2016}\cite{Lansing2016} propose to assess the temporal evolution of networks by first transforming networks into signals through Classical Multidimensional  Scaling  based  on  the  resistance  distance  and then constructing  a  tensor  based  on  the  spectra  of  each  signal  across time. We use the average resistance distance as an attribute to map change in the graph time series. Also we use Non-metric Multi Dimensional Scaling to visualise the relationship between the attributes.
+
+\section{Motivations and Aims}
+
+From the brief overview presented above it is clear that a lot effort and attention has been given to the topic of dynamic network analysis. These papers touch on various methods that we use in our study. But the wide variety of our methods and the nature of our application to dynamic networks to the best of our knowledge is unique and not encountered in the literature. \\
+
+By treating the dynamic network as a time series we characterise each point in the series of the graphs by a number of attributes. These serve as a compact feature based representation of the network. The attributes are then collapsed into a single value either by taking the average or the Frobenius Norm where appropriate. \\
+
+This is done for traditional centrality measures as well as the novel metrics. We show that by directly applying the integral transform to the Normalised Graph Laplacian there is no requirement to find a common subspace first. The application gives us a common subspace in the alternative space such as Fourier, Hilbert and Abel etc. We can then efficiently calculate multiple attributes in these spaces which can then be compared over the time range in question. \\
+
+Also the treatment of networks as a music signal is novel. This approach opens the doors for many methods from digital music to be applied to networks. Therefore we can confidently state that we are addressing a real need for metrics designed to capture dynamism in networks. As a result we open the doors to many more methods to be imported not just from the fields from which we take inspiration but from other fields which use similar techniques. \\
+
+The Fourier Transform forms the basis of many techniques explored in this study. However, in contrast to this work where the authors try to characterise the change in the spectral content of a common Laplacian. We in this study show that by using the Normalised Graph Laplacian we are able to derive a frequency representation for the graph time series. From the frequency of the individual graphs we can derive attributes such as the Norm of the Abel transform of the magnitude of the Fourier Spectrum for the dynamic network. \\
+
+As mentioned that the analysis of dynamic networks is necessitated by the need to understand and model complex phenomenon. Undoubtedly there is great value in understanding the dynamics of such networks. The beneficiaries of this work are practitioners who are interested in or need to study dynamic networks. These could range from intelligence agencies monitoring changes in terrorist networks, social media companies monitoring and understanding the dynamics of their networks to telecommunications companies trying to identify interesting network dynamics that can drive their business forward. \\
+
+The main aim of this study is to explore these metrics using the Enron Email Network Data. This will serve as a proof of concept for these attributes and visualisation techniques as well as outline a generalised work flow for the systematic robust analysis of dynamic networks. \\
+
+A evaluation strategy is highlighted in this strategy that allows for a logical exploration and validation of these attributes and can serve as a road map for future work in this area.  \\
+
+Underlying all these analysis is the fact that these measures serve as a snapshot of a network at a point in this time. Thus sampling these measures at the different time intervals it is possible to derive a time series of attributes from the graph time series. This time series approach allows utilisation of methods from signal processing because by treating the graphs at the different time steps as a time series and the derived attributes also as a time series we can apply methods from signal processing \\
+
+From the field of Seismic Data Analysis we present a number of attributes which are based on the notion of the Complex Trace. This involves using the Hilbert Transform and using the Real and Imaginary components to derive attributes such as Amplitude, Phase and Frequency. From this a number of other attributes are derived. wen addition matrix decomposition methods such as Kernel Principal Components Analysis (KPCA) and Non-negative Matrix Factorisation (NMF) are used to derive additional measures. \\
+
+From the field of Music Information Retrieval we implement two measures the Zero Crossing Rate and the Spectral Centroid. This is possible by treating the networks as a audio signal by the use of the Fourier Transform on the Normalised Graph Laplacian. \\
+
+Both sets of similarity measures that we will call Seismic and Music attributes for convenience are well established in their respective but their application to dynamic networks is novel. The motivation to utilise these measures is driven by the need to have measures that are scalable, have a relatable interpretation and are particularly suited for dynamic analysis. For example the seismic attributes are commonly analysed for the identification of hydrocarbon reservoirs and in 4D seismic two surveys are compared at different time steps to characterise change as a result of production from a field. So these measures become particularly suited for analysis with a time component. \\
+
+Therefore the key motivations for this project can be summarised as firstly to develop an understanding of the use of traditional metrics to define a signal in a graph time series. Secondly, to complement existing measures with novel ones which will enhance our analytical capabilities for the structure of dynamic graphs. Third, to develop visualisation techniques to enable multiple attribute analysis and finally aggregation measures which can serve as a proxy for network activity. \\
+
+\section{Beneficiaries}
+Although the analysis presented in this study uses an email network the methods proposed here are generalisable to any dynamic or static network. This is because the attributes are calculated from the matrix of the graph structure like the Normalised Graph Laplacian. Therefore any problem that can be modelled as a network can be expressed as a Normalised Laplacian Matrix and these attributes can be easily calculated from it. This opens up these methods to practitioners and analysts from a wide variety of fields as a result.\\
+
+The main beneficiaries are practitioners or analysts who are involved or have an interest in the study of dynamic networks. This can range from social media companies trying to understand structural changes in their network and being able to identify easily the key players. wet could be useful to intelligence agencies analysing threat networks they have more tools to characterise the structural change in networks and identify times and nodes of interest. wet could also benefit telecommunications companies from example to understand how fast their network is expanding or contracting and more importantly predict some fundamental network property such as Average Degree at a time step in the future. Understanding potential trends in advance has the capacity to drive changes in strategy, enhance planning and deliver increased value for the business. 
+
+\section{Objectives}
+The objectives that will help us answer our research question are as follows:
+
+\begin{itemize}
+    \item Explore similarity measures proposed for the analysis of networks
+    \item Explore the use of these measures in a practical context
+    \item Evaluate how such measures can be applied to the analysis of dynamic networks and develop a generalised work flow
+    \item Derive novel attributes based on signal processing type approaches and benchmark their behaviour against existing measures
+    \item Develop visualisation techniques to support multiple attribute analysis on dynamic networks
+    \item Suggest aggregation schemes to serve as a snapshot of network activity over time
+\end{itemize}
+
+\section{Research Question}
+
+The research question can be stated formally as follows:\\
+
+\emph{How can similarity measures be used to analyse dynamic email networks? How can similarity measures in alternative spaces support the analysis of dynamic networks?}
+
+\section{Overview of Methodology}
+
+The methodology followed in this study is as follows:
+
+\begin{enumerate}
+    \item Source an appropriate email network network dataset with timestamps 
+    \item Break data into yearly and monthly sets with no temporal aggregation
+    \item For the graph time series at the monthly and yearly level analyse the networks through traditional measures such as Centrality, Algebraic Connectivity, Density and Average Clustering Coefficient. These form the benchmark measures against which other measures are compared.
+    \item For the novel measures proposed determine which of the 3 graph matrices:  Modularity, Adjacency and Normalised Laplacian yield the most stable attributes. This is done by analysis of the Signal to Noise Ratio, Mean Absolute Deviation, numerical magnitude of the attributes and their ability to model the signal in the benchmark measures. 
+    \item Pick the Matrix yielding the most stable attributes using this to explore correlation among the measures, new visualisation approaches and aggregation schemes.
+    \item Scale all attributes to [-1,1] interval for comparability.
+    \item Perform correlation, regression and manifold reduction analysis to understand the relationship between all the different attributes
+    \item Derive node level trends for common nodes at the yearly level for centrality measures
+    \item Explain trends in the yearly and monthly trends relating to network visualisations while evaluating the ability of the measures to represent the graph time series signal
+\end{enumerate}
+
+\section{Report Structure}
+
+This report is structured into 6 key chapters. The in Chapter 1, the main aims, motivations, objectives and research questions are stated for clarity and final evaluation of the outcomes. In Chapter 2, we present a literature review where all the relevant information is summarised and presented. This serves to inform the rest of the analysis conducted. The analytical methods are presented in detail in Chapter 3. Chapter 4, shows all the results due to the applications of the measures in Chapter 3. We also present a detailed discussion noting our observations on structures and trends from the data. Chapter 5, presents a detailed evaluation of the methods and we answer the research question that we stated in Chapter 1. Chapter 6, concludes with our reflections, suggestions for further work and final conclusions of this study. 
+
+
+
+ 
+
+
+
+
+
