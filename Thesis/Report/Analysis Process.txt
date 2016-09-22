@@ -1,0 +1,36 @@
+﻿
+Step 1: Data Acquisition and Quality Control 
+Step 2: Exploratory Network Analysis
+
+Step 3: Attribute Analysis
+1. Acquire Enron email network data with timestamps
+2. Check data quality by examining time stamps for errors and checking data shape
+3. Discard data with incorrect time stamps from the analysis
+4. Segment data into yearly and monthly chunks
+5. From the segmented data create networks without temporal aggregation from the yearly and monthly data
+6. On these yearly and monthly networks derive centrality and network statistics
+7. Use the centrality and assortativity statistics to establish a signal for the graph time series. 
+8. Derive network visualisations using clustered indices sorted adjacency matrices, node link and waveform diagrams
+
+9. Using the Hilbert to derive a complex trace derive attributes commonly used in seismic data analysis
+10. Using the Fourier Transform to derive real frequency components to derive an audio signal derive Music Information Retrieval Attributes
+11. Derive additional novel attributes and those from literature
+12. For all the attributes above determine which graph matrix gives the best attributes by looking at the Normalised Laplacian, Modularity and Adjacency Matrix
+13. Use Entropy and Signal to Noise Ratio in addition to comparison with the signal of the benchmark measures in Step 2 to determine the best attribute set
+Step 4: Attribute Volume Derivation
+Step 5: Attribute Voume  Analysis 
+
+Step 6: Node Level Analysis
+14. Aggregate by averaging the Normalised Laplacian attributes derive an attribute volume for the graph time series at the monthly and yearly level scaling to [-1,1] interval
+15. From the monthly attribute volume explore aggregation measures such as the RMS, NRMS and Emergence
+16. Add these aggregation measures to the attribute volume to derive a final attribute volume
+
+17. Use the attribute volume to compare signal of derived attributes to benchmark measures noting anomalies
+18. From the attribute volume derive Pearson correlation matrice, Correlation Network, Correlation Network degree Histograms 
+19. Explore attribute similarity through additional techniques such as MDS and TSNE
+20. Using the Average Degree as a predictive target perform Regression Analysis to derive feature ranking of attributes using a 50/50 train/test split
+
+21. Use the yearly networks to identify common nodes
+22. Use the centrality measures to explore the trends of these nodes over the course of the yearly timescales
+23. Compare their behaviour to the yearly signal of the network in general noting correlations and anomalies.
+
